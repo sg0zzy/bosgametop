@@ -7,7 +7,7 @@ SRC     := bgtop.c
 
 PREFIX  ?= /usr/local
 BINDIR  := $(PREFIX)/bin
-LIBDIR  := $(PREFIX)/lib/bgtop
+LIBDIR  := $(PREFIX)/lib/bosgametop
 
 SYSTEMD_DIR ?= /etc/systemd/system
 
