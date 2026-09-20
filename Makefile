@@ -2,12 +2,12 @@ CC      ?= gcc
 CFLAGS  ?= -O2 -Wall -Wextra
 LDLIBS  ?= -lncurses
 
-TARGET  := bosgametop
-SRC     := bosgametop.c
+TARGET  := bgtop
+SRC     := bgtop.c
 
 PREFIX  ?= /usr/local
 BINDIR  := $(PREFIX)/bin
-LIBDIR  := $(PREFIX)/lib/bosgametop
+LIBDIR  := $(PREFIX)/lib/bgtop
 
 SYSTEMD_DIR ?= /etc/systemd/system
 
