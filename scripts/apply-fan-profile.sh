@@ -3,8 +3,8 @@ set -euo pipefail
 
 EC_BASE="/sys/class/ec_su_axb35"
 
-RAMPUP="50,60,70,78,85"
-RAMPDOWN="43,50,57,64,70"
+RAMPUP="50,60,70,75,80"
+RAMPDOWN="40,48,55,62,68"
 MODE="curve"
 
 if [[ ! -d "$EC_BASE" ]]; then
