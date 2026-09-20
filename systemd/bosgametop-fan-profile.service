@@ -1,0 +1,12 @@
+[Unit]
+Description=Apply BOSGAME AXB35 fan profile
+After=systemd-modules-load.service
+ConditionPathExists=/sys/class/ec_su_axb35
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/bosgametop/apply-fan-profile.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
