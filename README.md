@@ -1,8 +1,8 @@
-# bosgametop
+# bgtop
 
 A lightweight TUI hardware and load monitor tailored for BOSGAME systems based on the AMD Ryzen AI Max+ 395 / AXB35 platform.
 
-`bosgametop` reads hardware information directly from Linux `/proc` and `/sys`, with minimal overhead and no heavy monitoring framework.
+`bgtop` reads hardware information directly from Linux `/proc` and `/sys`, with minimal overhead and no heavy monitoring framework.
 
 It is designed primarily for AI workloads, where standard tools such as `htop` or `btop` may not provide a clear view of GPU load, AMD unified memory allocation, and the BOSGAME embedded-controller fan state.
 
@@ -133,7 +133,7 @@ To load it automatically at boot:
 echo ec_su_axb35 | sudo tee /etc/modules-load.d/ec_su_axb35.conf
 ```
 
-The rest of `bosgametop` can still operate without `ec_su_axb35`; fan-related information will simply be unavailable.
+The rest of `bgtop` can still operate without `ec_su_axb35`; fan-related information will simply be unavailable.
 
 ## Building
 
@@ -146,7 +146,7 @@ make
 Then start the monitor with:
 
 ```bash
-./bosgametop
+./bgtop
 ```
 
 Press `q` to quit.
@@ -162,13 +162,13 @@ sudo make install
 The executable will be installed by default as:
 
 ```text
-/usr/local/bin/bosgametop
+/usr/local/bin/bgtop
 ```
 
 You can then run it from anywhere:
 
 ```bash
-bosgametop
+bgtop
 ```
 
 To uninstall:
@@ -182,7 +182,7 @@ sudo make uninstall
 You can also build without the Makefile:
 
 ```bash
-gcc -O2 -Wall -Wextra bosgametop.c -o bosgametop -lncurses
+gcc -O2 -Wall -Wextra bgtop.c -o bosgametop -lncurses
 ```
 
 ## Optional fan profile
