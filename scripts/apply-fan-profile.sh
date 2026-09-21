@@ -3,8 +3,14 @@ set -euo pipefail
 
 EC_BASE="/sys/class/ec_su_axb35"
 
-RAMPUP="50,60,70,75,80"
-RAMPDOWN="40,48,55,62,68"
+#very aggressive and more noisy
+RAMPUP="45,52,58,64,70"
+RAMPDOWN="40,47,53,59,65"
+
+#quieter and less aggressive
+#RAMPUP="50,60,70,75,80"
+#RAMPDOWN="40,48,55,62,68"
+
 MODE="curve"
 
 if [[ ! -d "$EC_BASE" ]]; then
