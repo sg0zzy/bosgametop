@@ -14,7 +14,24 @@ RAMPDOWN="40,47,53,59,65"
 MODE="curve"
 
 if [[ ! -d "$EC_BASE" ]]; then
-    echo "ec_su_axb35 interface not found: $EC_BASE" >&2
+    echo "ec_su_axb35 sysfs interface not found after module load: $EC_BASE (check dmesg or journalctl -k)" >&2
+    exit 1
+fi
+
+HWMON_DIR=""
+for name_file in /sys/class/hwmon/hwmon*/name; do
+    [[ -f "$name_file" ]] || continue
+    if [[ $(<"$name_file") == ec_su_axb35 ]]; then
+        HWMON_DIR=${name_file%/name}
+        break
+    fi
+done
+if [[ -n "$HWMON_DIR" ]]; then
+    echo "ec_su_axb35 hwmon device: $HWMON_DIR"
+fi
+
+if [[ ! -d "$EC_BASE/fan1" && ! -d "$EC_BASE/fan2" && ! -d "$EC_BASE/fan3" ]]; then
+    echo "ec_su_axb35 sysfs interface has no fan devices under $EC_BASE" >&2
     exit 1
 fi
 

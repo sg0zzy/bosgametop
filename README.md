@@ -49,8 +49,8 @@ FANS
 RPM       2782                2982                1451
 Level     5                   5                   5
 Mode      curve               curve              curve
-Up        50,60,70,78,85      50,60,70,78,85     50,60,70,78,85
-Down      43,50,57,64,70      43,50,57,64,70     43,50,57,64,70
+Up        45,52,58,64,70      45,52,58,64,70     45,52,58,64,70
+Down      40,47,53,59,65      40,47,53,59,65     40,47,53,59,65
 ```
 
 ## Requirements
@@ -135,6 +135,54 @@ echo ec_su_axb35 | sudo tee /etc/modules-load.d/ec_su_axb35.conf
 
 The rest of `bgtop` can still operate without `ec_su_axb35`; fan-related information will simply be unavailable.
 
+## Kernel module / DKMS
+
+The `ec_su_axb35` driver is an out-of-tree module. A manual build is installed for one kernel only; DKMS registers its source and rebuilds it automatically when a new kernel is installed.
+
+On Debian, install the build dependencies and headers for the running kernel:
+
+```bash
+sudo apt install dkms build-essential "linux-headers-$(uname -r)"
+```
+
+The upstream driver source is a separate checkout. From this repository, install it with:
+
+```bash
+sudo ./scripts/install-ec-su-dkms.sh /path/to/ec-su_axb35-linux
+```
+
+If the path is omitted, the installer uses `~/code/ec-su_axb35-linux` for the user who invoked `sudo`. It copies the source and this repository's `dkms.conf` to `/usr/src/ec_su_axb35-1.0`, registers DKMS, builds and installs the module for the running kernel, then loads it. The installer can be run again after changing the driver source. Keep this repository available when rerunning it.
+
+Verify the installation:
+
+```bash
+dkms status
+modinfo ec_su_axb35
+lsmod | grep ec_su_axb35
+```
+
+After a kernel update, DKMS should build the module for the new kernel automatically. Before rebooting, check `dkms status` and ensure headers for the new kernel are installed.
+
+If the module is missing after an update, check the status and build log, then rebuild for the running kernel:
+
+```bash
+dkms status
+sudo cat /var/lib/dkms/ec_su_axb35/1.0/build/make.log
+sudo dkms autoinstall -k "$(uname -r)"
+sudo modprobe ec_su_axb35
+```
+
+If `modprobe` fails, inspect `journalctl -k -b` or `dmesg` for driver errors. If it loads but fan data is absent, check `/sys/class/ec_su_axb35` and find any matching hwmon device by its `name` rather than assuming a fixed `hwmonX` number:
+
+```bash
+for name_file in /sys/class/hwmon/hwmon*/name; do
+    [ -f "$name_file" ] || continue
+    [ "$(cat "$name_file")" = ec_su_axb35 ] && echo "${name_file%/name}"
+done
+```
+
+The fan-profile service runs `modprobe` before applying its curve. If the module cannot load or its sysfs fan interface is absent, the service fails with a diagnostic in `journalctl -u bosgametop-fan-profile.service -b`.
+
 ## Building
 
 Clone the repository and run:
@@ -202,8 +250,8 @@ does **not** modify fan settings.
 The optional profile currently uses:
 
 ```text
-Ramp-up:   50,60,70,78,85
-Ramp-down: 43,50,57,64,70
+Ramp-up:   45,52,58,64,70
+Ramp-down: 40,47,53,59,65
 Mode:      curve
 ```
 
@@ -283,8 +331,10 @@ bosgametop/
 ├── Makefile
 ├── README.md
 ├── .gitignore
+├── packaging/dkms/ec_su_axb35/dkms.conf
 ├── scripts/
-│   └── apply-fan-profile.sh
+│   ├── apply-fan-profile.sh
+│   └── install-ec-su-dkms.sh
 └── systemd/
     └── bosgametop-fan-profile.service
 ```
