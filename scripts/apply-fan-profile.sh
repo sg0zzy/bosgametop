@@ -5,7 +5,7 @@ EC_BASE="/sys/class/ec_su_axb35"
 
 # most aggressive considering than on 1-2 the fan is switched off
 RAMPUP="30,37,45,53,65"
-RAMPDOWN="25,32,45,50,55"
+RAMPDOWN="22,32,42,50,55"
 
 # aggressive and more noisy
 #RAMPUP="45,52,58,64,70"
