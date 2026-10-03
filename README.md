@@ -153,6 +153,8 @@ sudo ./scripts/install-ec-su-dkms.sh /path/to/ec-su_axb35-linux
 
 If the path is omitted, the installer uses `~/code/ec-su_axb35-linux` for the user who invoked `sudo`. It copies the source and this repository's `dkms.conf` to `/usr/src/ec_su_axb35-1.0`, registers DKMS, builds and installs the module for the running kernel, then loads it. The installer can be run again after changing the driver source. Keep this repository available when rerunning it.
 
+This installer only manages the kernel module. Run `scripts/apply-fan-profile.sh` to apply the fan profile once, or `scripts/update_systemd_service.sh` to install or update the service that applies it at boot (see below).
+
 Verify the installation:
 
 ```bash
@@ -280,25 +282,19 @@ for f in /sys/class/ec_su_axb35/fan*; do
 done
 ```
 
-### Install the fan profile
+### Install or update the fan-profile service
 
-Install the helper script and systemd unit:
-
-```bash
-sudo make install-fan-profile
-```
-
-Reload systemd:
+Run the separate systemd setup script:
 
 ```bash
-sudo systemctl daemon-reload
+sudo ./scripts/update_systemd_service.sh
 ```
 
-Enable the profile at boot and apply it immediately:
+It installs the current `scripts/apply-fan-profile.sh` to `/usr/local/lib/bosgametop/` and copies `systemd/bosgametop-fan-profile.service` to `/etc/systemd/system/`. It then reloads systemd, enables the service at boot, and restarts it to apply the profile immediately. The kernel module must already be installed.
 
-```bash
-sudo systemctl enable --now bosgametop-fan-profile.service
-```
+Rerun this script after editing the profile or unit file. Restarting reapplies the profile even when the oneshot service is already active.
+
+The underlying `make install-fan-profile` target only installs the files; it does not reload, enable, or start the service. `make install` only installs `bgtop`.
 
 Check its status:
 
@@ -334,7 +330,8 @@ bosgametop/
 ├── packaging/dkms/ec_su_axb35/dkms.conf
 ├── scripts/
 │   ├── apply-fan-profile.sh
-│   └── install-ec-su-dkms.sh
+│   ├── install-ec-su-dkms.sh
+│   └── update_systemd_service.sh
 └── systemd/
     └── bosgametop-fan-profile.service
 ```
