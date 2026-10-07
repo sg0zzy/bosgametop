@@ -12,7 +12,7 @@ EC_BASE="/sys/class/ec_su_axb35"
 # RAMPDOWN="22,32,42,50,55"
 
 # aggressive and more noisy
-RAMPUP="45,55,65,75,85"
+RAMPUP="45,55,65,80,90"
 RAMPDOWN="40,50,60,70,80"
 
 # quieter and less aggressive
