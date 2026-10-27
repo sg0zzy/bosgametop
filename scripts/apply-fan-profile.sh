@@ -3,21 +3,13 @@ set -euo pipefail
 
 EC_BASE="/sys/class/ec_su_axb35"
 
-# most aggressive considering than on 1-2-3 the fan is switched off
-# RAMPUP="20,30,40,45,60"
-# RAMPDOWN="18,28,35,43,52"
-
-# more aggressive considering than on 1-2 the fan is switched off
-# RAMPUP="30,37,45,53,65"
-# RAMPDOWN="22,32,42,50,55"
-
 # aggressive and more noisy
-RAMPUP="45,55,65,80,90"
+RAMPUP="45,55,65,75,85"
 RAMPDOWN="40,50,60,70,80"
 
 # quieter and less aggressive
-# RAMPUP="50,60,70,75,80"
-# RAMPDOWN="40,48,55,62,68"
+# RAMPUP="50,60,70,80,90"
+# RAMPDOWN="44,52,60,70,80"
 
 MODE="curve"
 
